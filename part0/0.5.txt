@@ -1,0 +1,27 @@
+browser->server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/spa
+server-->browser: HTML-code
+browser->server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/main.css
+server-->browser: main.css
+browser->server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/spa.js
+server-->browser: spa.js
+
+note over browser:
+browser starts executing js-code
+that requests JSON data from server 
+end note
+
+browser->server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/data.json
+server-->browser: JSON-string ([{ content:  "<text>", date: "<date>"}, ...])
+
+browser->server: HTTP GET https://studies.cs.helsinki.fi/favicon.ico
+server-->browser: HTML-code
+
+note over browser:
+browser executes the event handler
+that renders notes to display
+end note
+
+1.Browser sends HTTP request to the server which responds with the HTML-code at the requested location.
+2. Browser also requests for main.css and spa.js files and server responds with contents of those files.
+3. When browser gets .js file it starts executing it and spa.js requests for JSON data of the notes.
+4. Browser executes event handler defined in spa.js that renders notes to display.

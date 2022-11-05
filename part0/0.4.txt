@@ -1,0 +1,31 @@
+browser->server: HTTP POST https://studies.cs.helsinki.fi/exampleapp/new_note, note: <submitted text>
+server-->browser: status code 302
+browser->server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/notes
+server-->browser: HTML-code
+browser->server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/main.css
+server-->browser: main.css
+browser->server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/main.js
+server-->browser: main.js
+
+note over browser:
+browser starts executing js-code
+that requests JSON data from server 
+end note
+
+browser->server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/data.json
+server-->browser: JSON-string ([{ content: "submitted text", date: "<date>" }, ...])
+
+browser->server: HTTP GET https://studies.cs.helsinki.fi/favicon.ico
+server-->browser: HTML-code
+
+note over browser:
+browser executes the event handler
+that renders notes to display
+end note
+
+
+1. Browser sends user input and performs HTTP POST request and server responds with status code 302 which browser reads and 
+2. performs HTTP GET request and server responds with html-code of the notes-page.
+3. Browser also requests main.css text and main.js text so that it could start executing js-code which
+4. requests new, updated JSON data from server.
+5. With main.js browser executes needed event handler to render notes to the page.

@@ -1,0 +1,20 @@
+browser->server: HTTP POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa, JSON-string of the newly created note
+server-->browser: status code 201
+
+note over browser:
+browser starts executing js-code
+that it fetched from the server
+when page loaded last time
+end note
+
+note over browser:
+browser executes the event handler
+that prevents default handling of form submit.
+end note
+
+note over browser:
+Event handler creates and adds users input to the notes list and
+rerenders the note list on the page
+end note
+
+
