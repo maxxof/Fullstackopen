@@ -6,6 +6,7 @@ const Button = props => <button onClick={props.handleClick}>{props.text}</button
 const Display = props => {
   return (
     <div>
+      <h1>{props.header}</h1>
       <p>{props.text}</p>
       <p>has {props.value} votes</p>
     </div>
@@ -25,6 +26,8 @@ const App = () => {
    
   const [selected, setSelected] = useState(0)
   const [points, setPoints] = useState([0, 0, 0, 0, 0, 0, 0])
+  const max = Math.max(...points)
+  const indexOfMax = points.indexOf(max)
 
   const next = () => {
     const num = Math.floor(Math.random() * 7)
@@ -39,9 +42,10 @@ const App = () => {
 
   return (
     <div>
-      <Display text={anecdotes[selected]} value={points[selected]}/>
+      <Display header='Anecdote of the day' text={anecdotes[selected]} value={points[selected]}/>
       <Button handleClick={() => vote(selected)} text='vote'/>
       <Button handleClick={() => next()} text='next anecdote'/>
+      <Display header='Anecdote with the most votes' text={anecdotes[indexOfMax]} value={points[indexOfMax]}/>
     </div>
   )
 }
