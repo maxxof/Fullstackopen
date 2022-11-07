@@ -4,12 +4,34 @@ const Header = props => <h1>{props.text}</h1>
 
 const Button = props => <button onClick={props.handleClick}>{props.text}</button>
 
-const Stats = props => {
+const Stats = (props) => {
+  const { goods, neutrals, bads } = props.all
+  const sum = goods+neutrals+bads
+  const average = () => {
+    if (sum === 0) {
+      return 0
+    }
+    else {
+      return (goods-bads)/(goods+neutrals+bads)
+    }
+  }
+  const positive = () => {
+    if (sum === 0) {
+      return 0
+    }
+    else {
+      return 100*goods/(goods+neutrals+bads)
+    }
+  }
+
   return (
     <div>
-      <p>good {props.all.good}</p>
-      <p>neutral {props.all.neutral}</p>
-      <p>bad {props.all.bad}</p>
+      <p>good {goods}</p>
+      <p>neutral {neutrals}</p>
+      <p>bad {bads}</p>
+      <p>all {sum}</p>
+      <p>average {average()}</p>
+      <p>positive {positive()} %</p>
     </div>
   )
 }
@@ -18,7 +40,7 @@ const App = () => {
   const [good, setGood] = useState(0)
   const [neutral, setNeutral] = useState(0)
   const [bad, setBad] = useState(0)
-  const all = { good: good, neutral: neutral, bad: bad }
+  const all = { goods: good, neutrals: neutral, bads: bad }
 
   const setToValue = (newVal, state) => {
     if (state === 'good') {
