@@ -4,7 +4,7 @@ const Header = props => <h1>{props.text}</h1>
 
 const Button = props => <button onClick={props.handleClick}>{props.text}</button>
 
-const Stats = (props) => {
+const Statistics = (props) => {
   const { goods, neutrals, bads } = props.all
   const sum = goods+neutrals+bads
   const average = () => {
@@ -61,7 +61,7 @@ const App = () => {
       <Button handleClick={() => setToValue(neutral+1, 'neutral')} text='neutral' />
       <Button handleClick={() => setToValue(bad+1, 'bad')} text='bad' />
       <Header text='statistics' />
-      <Stats all={all} />
+      <Statistics all={all} />
     </div>
   )
 }
