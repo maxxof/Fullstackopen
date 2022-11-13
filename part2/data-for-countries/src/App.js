@@ -25,13 +25,36 @@ const Country = ({ country }) => {
       <ul>
         {Object.values(country.languages).map(language => <li key={language}>{language}</li>)}
       </ul>
-      <img src={country.flags.png} alt="flag" width="200" height="150"></img>
+      <img src={country.flags.png} alt="flag" width="220" height="150"></img>
     </div>
   )
 }
 
-const CountriesRenderer = ({ countries, filter }) => {
-  const filteredCountries = countries.filter(country => country.name.common.toLowerCase().includes(filter))
+const ListOfCountries = ({ countries, toShow, setToShow }) => {
+
+  const handleClick = country => (event) => {
+    if (toShow === country.name.common) {
+      setToShow('')
+    }
+    else {
+      setToShow(country.name.common)
+    }
+  }
+
+  return(
+    <div>
+      {countries.map(country => 
+      <div key={country.name.common}>
+        {country.name.common}
+        <button onClick={handleClick(country)}>show</button>
+        {toShow === country.name.common && <Country country={country} />}
+      </div>)}
+    </div>
+  )
+}
+
+const Display = ({ countries, newFilter, toShow, setToShow }) => {
+  const filteredCountries = countries.filter(country => country.name.common.toLowerCase().includes(newFilter))
   
   if (filteredCountries.length === countries.length || filteredCountries.length === 0) {
     return
@@ -40,7 +63,7 @@ const CountriesRenderer = ({ countries, filter }) => {
     return <div>Too many matches, specify another filter</div>
   }
   else if (filteredCountries.length > 1 && filteredCountries.length < 11) {
-    return filteredCountries.map(country => <div key={country.name.common}>{country.name.common}</div>)
+    return <ListOfCountries countries={filteredCountries} toShow={toShow} setToShow={setToShow}/>
   }
   else {
     return <Country country={filteredCountries[0]} />
@@ -50,6 +73,7 @@ const CountriesRenderer = ({ countries, filter }) => {
 const App = () => {
   const [newFilter, setNewFilter] = useState('')
   const [countries, setCountries] = useState([])
+  const [toShow, setToShow] = useState('')
 
   useEffect(() => {
     axios
@@ -62,6 +86,7 @@ const App = () => {
 
   const handleFilterChange = (event) => {
     setNewFilter(event.target.value.toLowerCase())
+    setToShow('')
   }
 
   return (
@@ -69,9 +94,11 @@ const App = () => {
       <Filter 
       newFilter={newFilter}
       handleFilterChange={handleFilterChange}/>
-      <CountriesRenderer 
+      <Display
       countries={countries}
-      filter={newFilter}/>
+      newFilter={newFilter}
+      toShow={toShow}
+      setToShow={setToShow}/>
     </div>
   )
 }
