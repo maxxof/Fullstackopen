@@ -1,15 +1,39 @@
 import { useState, useEffect } from 'react'
 import personService from './services/persons'
 
-const Person = ({ person, number}) => <div>{person} {number}</div>
-
-const PersonsRenderer = ({ persons, filter}) => {
+const Person = ({ person, number, handleClick}) => {
   return (
-    persons.flatMap(person => person.name.toLowerCase().includes(filter) ?
-    <Person key={person.id} person={person.name} number={person.number}
-    /> :
-    ''
-    )
+    <div>
+      {person} {number}
+      &nbsp;&nbsp;
+      <button onClick={handleClick}>delete</button>
+    </div>
+  )
+}
+
+const PersonsRenderer = ({ persons, newFilter, setPersons }) => {
+  const filteredPersons = persons.filter(person => person.name.toLowerCase().includes(newFilter))
+
+  const handleClick = (id, name) => event => {
+    if (window.confirm(`Delete ${name} ?`)) {
+      personService
+      .deletePerson(id)
+      .then()
+      setPersons(persons.filter(person => person.id !== id))
+    }
+  }
+
+  return (
+    <>
+    {filteredPersons.map(person => 
+      <Person 
+      key={person.id} 
+      person={person.name} 
+      number={person.number} 
+      handleClick={handleClick(person.id, person.name)} 
+      />
+    )}
+    </>
   )
 }
 
@@ -73,7 +97,6 @@ const App = () => {
     if (newName !== '') {
       const personObject = {
         name: newName, 
-        id: persons.length + 1, 
         number: newNumber
       }
 
@@ -114,7 +137,7 @@ const App = () => {
       />
       <h3>Numbers</h3>
       <div>
-        <PersonsRenderer persons={persons} filter={newFilter}/> 
+        <PersonsRenderer persons={persons} newFilter={newFilter} setPersons={setPersons}/> 
       </div>
     </div>
   )
