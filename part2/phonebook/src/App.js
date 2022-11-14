@@ -71,11 +71,23 @@ const Filter = (props) => {
   )
 }
 
+const Notification = ({ message }) => {
+  if (message === null) {
+    return null
+  }
+  return (
+    <div className="success">
+      {message}
+    </div>
+  )
+}
+
 const App = () => {
   const [persons, setPersons] = useState([]) 
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
+  const [successMessage, setSuccessMessage] = useState(null)
 
   useEffect(() => {
     personService
@@ -94,6 +106,13 @@ const App = () => {
       setNewNumber('')
     }
 
+    const notifiy = name => {
+      setSuccessMessage(`Added ${name}`)
+      setTimeout(() => {
+        setSuccessMessage(null)
+      }, 5000)
+    }
+
     if (nameExists && window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
       const person = persons.find(person => person.name === newName)
       const changedPerson = {...person, number: newNumber}
@@ -103,6 +122,7 @@ const App = () => {
         .then(returnedPerson => {
           setPersons(persons.map(person => person.name !== newName ? person : returnedPerson))
           clearInput()
+          notifiy(person.name)
         })
 
     } else if (!/\S/.test(newName) === false && nameExists === false) {
@@ -116,6 +136,7 @@ const App = () => {
         .then(returnedPerson => {
           setPersons(persons.concat(returnedPerson))
           clearInput()
+          notifiy(returnedPerson.name)
         })
     }
   }
@@ -133,6 +154,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={successMessage} />
       <Filter 
       newFilter={newFilter}
       handleFilterChange={handleFilterChange}
