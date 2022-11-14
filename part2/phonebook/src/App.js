@@ -142,7 +142,11 @@ const App = () => {
           succesfulAdd(person.name)
         })
         .catch(error => {
-          setPersons(persons.filter(person => person.name !== newName))
+          personService
+            .getAll()
+            .then(refreshedPersons => {
+              setPersons(refreshedPersons)
+            })
           clearInput()
           unsuccesfulAdd(person.name)
         })
