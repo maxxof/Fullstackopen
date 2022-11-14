@@ -20,8 +20,8 @@ const PersonsRenderer = ({ persons, newFilter, setPersons }) => {
       .deletePerson(id)
       .then()
       setPersons(persons.filter(person => person.id !== id))
+      }
     }
-  }
 
   return (
     <>
@@ -67,19 +67,26 @@ const Filter = (props) => {
     value={props.newFilter}
     onChange={props.handleFilterChange}
     />
-  </div>
+    </div>
   )
 }
 
-const Notification = ({ message }) => {
+const Notification = ({ message, success }) => {
   if (message === null) {
     return null
+  } else if (success === true) {
+    return (
+      <div className="success">
+        {message}
+      </div>
+    )
+  } else if (success === false) {
+    return (
+      <div className="unsuccess">
+        {message}
+      </div>
+    )
   }
-  return (
-    <div className="success">
-      {message}
-    </div>
-  )
 }
 
 const App = () => {
@@ -88,6 +95,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
   const [successMessage, setSuccessMessage] = useState(null)
+  const [succeeded, setSucceeded] = useState(null)
 
   useEffect(() => {
     personService
@@ -106,8 +114,17 @@ const App = () => {
       setNewNumber('')
     }
 
-    const notifiy = name => {
+    const succesfulAdd = name => {
+      setSucceeded(true)
       setSuccessMessage(`Added ${name}`)
+      setTimeout(() => {
+        setSuccessMessage(null)
+      }, 5000)
+    }
+
+    const unsuccesfulAdd = name => {
+      setSucceeded(false)
+      setSuccessMessage(`Information of ${name} has already been removed from server`)
       setTimeout(() => {
         setSuccessMessage(null)
       }, 5000)
@@ -122,7 +139,12 @@ const App = () => {
         .then(returnedPerson => {
           setPersons(persons.map(person => person.name !== newName ? person : returnedPerson))
           clearInput()
-          notifiy(person.name)
+          succesfulAdd(person.name)
+        })
+        .catch(error => {
+          setPersons(persons.filter(person => person.name !== newName))
+          clearInput()
+          unsuccesfulAdd(person.name)
         })
 
     } else if (!/\S/.test(newName) === false && nameExists === false) {
@@ -136,7 +158,7 @@ const App = () => {
         .then(returnedPerson => {
           setPersons(persons.concat(returnedPerson))
           clearInput()
-          notifiy(returnedPerson.name)
+          succesfulAdd(returnedPerson.name)
         })
     }
   }
@@ -154,7 +176,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={successMessage} />
+      <Notification message={successMessage} success={succeeded}/>
       <Filter 
       newFilter={newFilter}
       handleFilterChange={handleFilterChange}
